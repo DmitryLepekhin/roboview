@@ -1,0 +1,39 @@
+<div
+  class="node"
+  fxLayout="column"
+>
+  <div
+    class="header"
+    fxLayout="column"
+  >
+    <div
+      fxLayout="row"
+    >
+      <mat-icon>{{getIconName()}}</mat-icon>
+      <span class="title" fxLayoutAlign="center" fxFlex="grow">{{robot.name}}</span>
+    </div>
+
+    <div class="type" fxLayoutAlign="end">
+      {{robot.componentType}}
+    </div>
+
+  </div>
+
+  <div
+    class="comment"
+    fxFlex="grow"
+  >
+    {{robot.comment}}
+  </div>
+
+  <div
+    class="footer"
+    fxLayoutAlign="end"
+  >
+    <button
+      mat-icon-button
+    ><mat-icon>expand_more</mat-icon></button>
+
+  </div>
+
+</div>

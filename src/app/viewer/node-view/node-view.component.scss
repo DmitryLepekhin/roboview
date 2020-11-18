@@ -1,0 +1,50 @@
+// area containing a robot node
+.node {
+
+  box-shadow: 10px 5px 5px grey;
+
+  background-color: whitesmoke;
+  display: block;
+
+  max-width: 15rem;
+  min-width: 10rem;
+  min-height: 20rem;
+
+  margin: 20px;
+
+  page-break-inside: avoid !important;
+  -webkit-column-break-inside: avoid;
+  page-break: avoid !important;
+}
+
+// area containing robot name, icon and type
+.header {
+  margin: 10px;
+}
+
+// robot name
+.title {
+  font-size: large;
+}
+
+// robot type (componentType)
+.type {
+  justify-content: end;
+  font-size: small;
+  color: dimgrey;
+  margin: 10px;
+}
+
+.comment {
+  margin: 15px;
+  page-break-inside: avoid !important;
+  -webkit-column-break-inside: avoid;
+  page-break: avoid !important;
+}
+
+.footer {
+  margin: 0;
+  padding: 0;
+}
+
+

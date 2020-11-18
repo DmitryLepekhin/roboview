@@ -1,0 +1,13 @@
+<div
+  class="row"
+  fxLayout="column"
+>
+  <h2 class="m-1">{{getLevelPath()}}</h2>
+  <div
+    class="grid"
+  >
+    <ng-container *ngFor="let element of level.elements">
+      <app-node-view [robot]="element"></app-node-view>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+<div
+  fxFlex="grow"
+  fxLayout="column"
+  fxLayoutAlign="center center"
+  class="expand"
+  [formGroup]="formGroup"
+>
+  <div>
+    <mat-form-field>
+      <mat-label>Select robot.ts file</mat-label>
+      <input
+        [value]="fileName"
+        id="filename"
+        [formControl]="filenameControl"
+        matInput
+        readonly
+      />
+      <button
+        (click)="file.click()"
+        mat-icon-button
+        matSuffix
+      >
+        <mat-icon>attachment</mat-icon>
+      </button>
+    </mat-form-field>
+    <input
+      #file
+      (change)="onFileChange($event)"
+      [accept]="'*.json'"
+      required
+      type="file"
+      hidden="true"
+    />
+  </div>
+
+  <button mat-raised-button (click)="navigate()">View</button>
+</div>
