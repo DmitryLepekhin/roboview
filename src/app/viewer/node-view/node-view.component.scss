@@ -1,52 +1,60 @@
-// area containing a robot node
-.node {
-
-  box-shadow: 10px 5px 5px grey;
-
-  background-color: whitesmoke;
-  display: block;
-
-  max-width: 15rem;
-  min-width: 15rem;
-  min-height: 15rem;
-
-  margin: 20px;
-
-  page-break-inside: avoid !important;
-  -webkit-column-break-inside: avoid;
-  page-break: avoid !important;
-
-  border: 1px solid black;
+.robot-node-section {
+  margin-bottom: 7rem; break-inside: avoid; -webkit-column-break-inside: avoid;
 }
 
-// area containing robot name, icon and type
-.header {
+.row {
+  display: table-row; width: 100%; break-inside: avoid; -webkit-column-break-inside: avoid;
+  border: solid 1px black;
+}
+
+.cell {
+  display: table-cell; break-inside: avoid; -webkit-column-break-inside: avoid; height: 15rem;
+  width: 15%;
+  vertical-align: top;
+}
+
+.cell .content {
+  display: flex; height: calc(100% - 20px); flex-flow: column; border: solid 1px black; box-shadow: 10px 5px 5px grey; box-sizing: border-box;
   margin: 10px;
 }
 
-// robot name
-.title {
-  font-size: large;
+.cell .content .title {
+  font-weight: bold; font-size: large;
+  margin: 0.5rem;
 }
 
-// robot type (componentType)
-.type {
-  justify-content: end;
+.cell .content .subtitle {
   font-size: small;
-  color: dimgrey;
+  margin: 0.5em;
+}
+
+.cell .content .comment {
+  overflow: auto;
+  padding: 10px;
+}
+
+.cell .content .footer {
+  min-height: 24px; margin-bottom: 4px;
+}
+
+.cell .stub {
+  display: flex; height: calc(100% - 20px); flex-flow: column;
   margin: 10px;
 }
 
-.comment {
-  margin: 15px;
-  page-break-inside: avoid !important;
-  -webkit-column-break-inside: avoid;
-  page-break: avoid !important;
+.header {
+  padding: 1rem;
+  background-color: #e6e6e6;
+
+  border-top: solid 2px black;
+  border-bottom: solid 1px darkgrey;
+
+  .comment {
+    font-size: medium;
+    margin-left: 2rem;
+  }
 }
 
-.footer {
-  margin: 0;
-  padding: 0;
+.table {
+  display: table;  padding: 1rem; width: calc(100% - 2rem);
 }
-
-

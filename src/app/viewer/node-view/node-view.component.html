@@ -1,39 +1,68 @@
-<div
-  class="node"
-  fxLayout="column"
->
-  <div
-    class="header"
-    fxLayout="column"
-  >
-    <div
-      fxLayout="row"
+<div id="{{level.id}}" class="robot-node-section">
+
+  <div class="header header-color">
+    <a mat-flat-button (click)="jumpToNode()" style="background-color: inherit;"><h2>{{getLevelPath()}}</h2></a>
+    <section
+      *ngIf="level.comment"
+      class="comment"
     >
-      <mat-icon>{{getIconName()}}</mat-icon>
-      <span class="title" fxLayoutAlign="center" fxFlex="grow">{{robot.name}}</span>
+      {{level.comment}}
+    </section>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="table">
+    <div *ngFor="let row of getRowIndexes()" class="row">
+      <div *ngFor="let col of getColumnIndexes();" class="cell">
+        <div
+          *ngIf="getRobot(row, col)"
+          class="content"
+          [id]="'node_' + getRobot(row, col).id"
+          [class]="getSelectedItemClass(getRobot(row, col).id)"
+        >
+          <div
+            fxLayout="row"
+            fxLayoutAlign="start space-around"
+          >
+            <div fxLayoutAlign="center start">
+              <mat-icon [style.margin]="'8px'">{{getIconName(getRobot(row, col).type)}}</mat-icon>
+            </div>
+            <div fxLayout="column" fxFlex="grow">
+              <div class="title">{{getRobot(row, col).name}}</div>
+              <div
+                class="subtitle subtitle-color"
+                fxLayoutAlign="end"
+              >{{getRobot(row, col).type}}</div>
+            </div>
+          </div>
+          <div
+            class="comment"
+            fxFlex="grow"
+          >
+            {{getRobot(row, col).comment}}
+          </div>
+          <div class="footer" fxLayoutAlign="end" *ngIf="getRobot(row, col).contents">
+            <button
+              mat-icon-button
+              (click)="jumpToHeader(getRobot(row, col))"
+              [style.width]="'24px'"
+            >
+              <mat-icon>expand_more</mat-icon>
+            </button>
+          </div>
+
+        </div>
+        <div
+          *ngIf="!getRobot(row, col)"
+          class="stub"
+        >
+          &nbsp;
+        </div>
+      </div>
+
     </div>
-
-    <div class="type" fxLayoutAlign="end">
-      {{robot.type}}
-    </div>
-
   </div>
 
-  <div
-    class="comment"
-    fxFlex="grow"
-  >
-    {{robot.comment}}
-  </div>
-
-  <div
-    class="footer"
-    fxLayoutAlign="end"
-  >
-    <button
-      mat-icon-button
-    ><mat-icon>expand_more</mat-icon></button>
-
-  </div>
-
+  <mat-divider></mat-divider>
 </div>

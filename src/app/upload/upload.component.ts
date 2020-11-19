@@ -1,7 +1,7 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {CacheService} from '../core/services/cache.service';
 import {Router} from '@angular/router';
+import {Robot} from '@app/core/structs';
 
 @Component({
   selector: 'app-upload',
@@ -9,8 +9,6 @@ import {Router} from '@angular/router';
   styleUrls: ['./upload.component.css']
 })
 export class UploadComponent {
-
-  fileContent;
 
   fileName = '';
 
@@ -20,9 +18,10 @@ export class UploadComponent {
 
   formGroup: FormGroup;
 
+  robot: Robot;
+
   constructor(
     private fb: FormBuilder,
-    private cache: CacheService,
     private router: Router
   ) {
     this.formGroup = this.fb.group({
@@ -47,14 +46,13 @@ export class UploadComponent {
       reader.readAsText(file, 'UTF-8');
       reader.onload = (evt: ProgressEvent<FileReader>) => {
         const contents: string = evt.target.result as string;
-        const obj = JSON.parse(contents);
-        that.cache.robot = obj;
+        that.robot = JSON.parse(contents);
       };
     }
   }
 
   navigate(): void {
-    this.router.navigate(['viewer']);
+    this.router.navigate(['viewer'], {state: this.robot});
   }
 
 }

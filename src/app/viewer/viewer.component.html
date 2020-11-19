@@ -1,32 +1,5 @@
-<app-node-view [robot]="robot"></app-node-view>
-
-<!--
-<div
-  class="grid"
->
-
-</div>
--->
-
-
-<!--
-<div
-  class="row"
-  fxLayout="column"
->
-  <h2 class="m-1">One level</h2>
-  <div
-    class="grid"
-  >
-    <ng-container *ngFor="let child of robot.contents">
-      <app-node-view [robot]="child"></app-node-view>
-    </ng-container>
-  </div>
-</div>
--->
-
 <ng-container *ngFor="let level of levels">
   <ng-container *ngIf="hasElements(level)">
-    <app-nodes-level [level]="level"></app-nodes-level>
+    <app-node-view [level]="level"></app-node-view>
   </ng-container>
 </ng-container>
