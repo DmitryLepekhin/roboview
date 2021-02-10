@@ -28,5 +28,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 @media print {
   app-root > * { display: block; }
-  //app-root app-viewer { display: block; }
+
+  // hide "screen" classes in print mode
+  .print {}
+  .screen {
+    display: none !important;
+  }
+}
+@media screen {
+  app-root > * { display: block; }
+
+  // hide "print" classes in screen mode
+  .print {
+    display: none !important;
+  }
+  .screen {}
 }

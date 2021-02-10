@@ -1,7 +1,8 @@
 <div id="{{level.id}}" class="robot-node-section">
 
   <div class="header header-color">
-    <a mat-flat-button (click)="jumpToNode()" style="background-color: inherit;"><h2>{{getLevelPath()}}</h2></a>
+    <a mat-flat-button (click)="jumpToNode()" style="background-color: inherit;" class="screen"><h2>{{getLevelPath()}}</h2></a>
+    <a mat-flat-button [href]="'#'+level.parent?.id" style="background-color: inherit;" class="print"><h2>{{getLevelPath()}}</h2></a>
     <section
       *ngIf="level.comment"
       class="comment"
@@ -43,10 +44,19 @@
             {{getRobot(row, col).comment}}
           </div>
           <div class="footer" fxLayoutAlign="end" *ngIf="getRobot(row, col).contents">
+            <a
+              mat-icon-button
+              href="#{{getRobot(row, col).id}}"
+              [style.width]="'24px'"
+              class="print"
+            >
+              <mat-icon>expand_more</mat-icon>
+            </a>
             <button
               mat-icon-button
               (click)="jumpToHeader(getRobot(row, col))"
               [style.width]="'24px'"
+              class="screen"
             >
               <mat-icon>expand_more</mat-icon>
             </button>
