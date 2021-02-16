@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {getPath, RobotNode, StepType} from '@app/core/structs';
+import {StepType, ViewBlock, ViewStep} from '@app/core/structs';
 import {DocNavigationService} from '@app/core/services/doc-navigation.service';
 
 @Component({
@@ -12,18 +12,18 @@ export class NodeViewComponent {
   readonly COLUMN_INDEXES = [0, 1, 2, 3, 4];
 
   @Input()
-  level: RobotNode;
+  level: ViewBlock;
 
   constructor(
     public docNavigationService: DocNavigationService
   ) { }
 
   getLevelPath(): string {
-    return getPath(this.level);
+    return this.level.path;
   }
 
   getRowIndexes(): number[] {
-    const size = Math.ceil(this.level.elements.length / this.getColumnIndexes().length);
+    const size = Math.ceil(this.level.steps.length / this.getColumnIndexes().length);
     return [...Array(size).keys()];
   }
 
@@ -31,12 +31,12 @@ export class NodeViewComponent {
     return this.COLUMN_INDEXES;
   }
 
-  getRobot(row: number, col: number): RobotNode {
+  getRobot(row: number, col: number): ViewStep {
     const index = row * this.getColumnIndexes().length + col;
-    return this.level.elements[index];
+    return this.level.steps[index];
   }
 
-  jumpToHeader(robot: RobotNode): void {
+  jumpToHeader(robot: ViewStep): void {
     this.docNavigationService.jumpToHeader(this.level, robot);
   }
 

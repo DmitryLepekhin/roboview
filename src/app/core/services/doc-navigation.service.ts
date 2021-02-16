@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import {RobotNode} from '@app/core/structs';
+import {Injectable} from '@angular/core';
+import {ViewBlock, ViewStep} from '@app/core/structs';
 import {ViewportScroller} from '@angular/common';
 
 @Injectable({
@@ -7,22 +7,31 @@ import {ViewportScroller} from '@angular/common';
 })
 export class DocNavigationService {
 
-  source: RobotNode;
-  destination: RobotNode;
+  source: ViewBlock;
+  destination: ViewBlock;
 
   constructor(
     private viewportScroller: ViewportScroller
   ) { }
 
-  jumpToHeader(source: RobotNode, destination: RobotNode): void {
-    this.destination = destination;
+  jumpToHeader(source: ViewBlock, destination: ViewStep): void {
+    this.destination = undefined;
     this.viewportScroller.scrollToAnchor('' + destination.id);
   }
 
-  jumpToNode(destination: RobotNode): void {
+  jumpToHeaderById(id: number): void {
+    this.destination = undefined;
+    this.viewportScroller.scrollToAnchor('' + id);
+  }
+
+  jumpToNode(destination: ViewBlock): void {
     this.destination = destination;
     if (this.destination.parent) {
-      this.viewportScroller.scrollToAnchor('' + destination.parent.id);
+      this.viewportScroller.scrollToAnchor('' + destination.parent);
     }
+  }
+
+  jumpToReference(refId: number): void {
+    this.viewportScroller.scrollToAnchor('' + refId);
   }
 }
