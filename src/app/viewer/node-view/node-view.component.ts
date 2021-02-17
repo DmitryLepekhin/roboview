@@ -1,18 +1,23 @@
-import {Component, Input} from '@angular/core';
+import {AfterViewInit, Component, Input} from '@angular/core';
 import {StepType, ViewBlock, ViewStep} from '@app/core/structs';
 import {DocNavigationService} from '@app/core/services/doc-navigation.service';
+import {Drawing} from '@app/core/d3/drawing';
 
 @Component({
   selector: 'app-node-view',
   templateUrl: './node-view.component.html',
   styleUrls: ['./node-view.component.scss']
 })
-export class NodeViewComponent {
+export class NodeViewComponent implements AfterViewInit {
 
   readonly COLUMN_INDEXES = [0, 1, 2, 3, 4];
 
   @Input()
   level: ViewBlock;
+
+  drawing: Drawing;
+
+  highlightedId: number;
 
   constructor(
     public docNavigationService: DocNavigationService
@@ -55,6 +60,7 @@ export class NodeViewComponent {
         return 'autorenew';
       case StepType.GUARDED_CHOICE:
         return 'mediation';
+      case StepType.BRANCH:
       case StepType.GUARDED_BRANCH:
         return 'account_tree';
       case StepType.TRY_CATCH:
@@ -67,16 +73,28 @@ export class NodeViewComponent {
         return 'subject';
       case StepType.FINAL_BLOCK:
         return 'grading';
+      case StepType.SNIPPET:
+        return 'text_snippet';
+      case StepType.DO_NOTHING:
+        return 'self_improvement';
       default:
         return 'bug';
     }
   }
 
-  getSelectedItemClass(id: number): string {
-    const highlightedNode = this.docNavigationService.destination;
-    if (highlightedNode && highlightedNode.id === id) {
-      return 'selected-item-color';
-    }
-    return '';
+  private draw(): void {
+    const id = 'svg' + this.level.id;
+    this.drawing = new Drawing('#' + id, this.docNavigationService, this.level);
+    this.drawing.draw();
   }
+
+  highlightStep(stepId: number, on: boolean): void {
+    this.drawing.highlightStep(stepId, on);
+    this.highlightedId = on ? stepId : null;
+  }
+
+  ngAfterViewInit(): void {
+    this.draw();
+  }
+
 }

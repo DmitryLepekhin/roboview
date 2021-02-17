@@ -9,6 +9,7 @@ export function convertRL1View(rl1Robot: RL1Robot): ViewBlock[] {
   const branches: Branch[] = flatMap(rl1Robot.blocks.map(block => block.branches));
   // map: step id -> block id, it will be used for backward links creation
   const allStepsBlocks = {};
+  const allBlocksMap = {};
   branches.forEach(branch => {
     const viewBlock: ViewBlock = createViewBlock(branch);
     branch.steps.forEach(step => {
@@ -18,29 +19,29 @@ export function convertRL1View(rl1Robot: RL1Robot): ViewBlock[] {
       allStepsBlocks['' + viewStep.id] = viewBlock.id;
     });
     result.push(viewBlock);
+    allBlocksMap['' + viewBlock.id] = viewBlock;
   });
 
-  // add reference to other branch in form of an additional step if needed
-  result.filter(block => block.endId > 0).filter(block => !lastStepIsBranch(block)).forEach(block => {
-    const link = new Link();
-    link.id = allStepsBlocks['' + block.endId];
-    const jointStep = new ViewStep();
-    jointStep.blockId = block.id;
-    jointStep.id = -1;
-    jointStep.componentType = 'Joint point';
-    jointStep.type = StepType.JOINT_POINT;
-    jointStep.name = 'continue @' + link.id;
-    jointStep.comment = '';
-    jointStep.links = [link];
-    block.steps.push(jointStep);
+  // add references to other branches
+  result.forEach(block => {
 
-    // add backward links
-    const parentBlock: ViewBlock = result.filter(b => b.id === allStepsBlocks['' + block.endId])[0];
-    if (parentBlock) {
-      const backLink = new Link();
-      backLink.id = block.id;
-      parentBlock.refs.push(backLink);
+    // collect array of id of blocks that are referenced by this block, it can be links from the block steps or endId
+    let outgoingBranchIds = flatMap(block.steps.map(step => step.links)).map(link => link.id).filter(id => id > 0);
+
+    if (block.endId > 0) {
+      // addLinkByEndId(block);
+      outgoingBranchIds.push(allStepsBlocks['' + block.endId]);
     }
+
+    // remove duplicates
+    outgoingBranchIds = [...new Set(outgoingBranchIds)];
+
+    outgoingBranchIds.map(id => allBlocksMap['' + id]).filter(parentBlock => !!parentBlock).forEach(parentBlock => {
+        const backLink = new Link();
+        backLink.id = block.id;
+        parentBlock.refs.push(backLink);
+    });
+
   });
 
   return result;
@@ -74,20 +75,6 @@ function createViewStep(step: Step): ViewStep {
   step.links?.forEach(link => viewStep.links.push({id: link}));
   viewStep.hasChildren = viewStep.links?.length > 0;
   return viewStep;
-}
-
-/**
- * Returns true if the last step in the ViewBlock contains references to other branches.
- * It is useful for branches that have endId > 0 (a reference to other branch)
- * and the last step already contains the reference. In this case it is not necessary to
- * visualize the reference additionally.
- */
-function lastStepIsBranch(block: ViewBlock): boolean {
-  if (block.steps.length > 0) {
-    const step = block.steps[block.steps.length - 1];
-    return step.links && step.links.length > 0;
-  }
-  return false;
 }
 
 function flatMap<T>(arrayOfArrays: T[][]): T[] {

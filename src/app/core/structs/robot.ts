@@ -53,7 +53,10 @@ export enum StepType {
   FINAL_BLOCK = 'Final block',
 
   BRANCH = 'Branch Point',
-  JOINT_POINT = 'Joint point'
+  JOINT_POINT = 'Joint point',
+
+  SNIPPET = 'Snippet',
+  DO_NOTHING = 'Do Nothing'
 }
 
 export enum BlockType {

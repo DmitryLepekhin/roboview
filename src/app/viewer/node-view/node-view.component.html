@@ -1,13 +1,12 @@
 <div id="{{level.id}}" class="robot-node-section">
 
   <div class="header header-color">
+    <h2>branch {{level.id}}</h2>
+    <svg style="width: 100%; height: 100%;" id="svg{{level.id}}"></svg>
+
     <a mat-flat-button (click)="jumpToNode()" style="background-color: inherit;" class="screen"><h2>{{getLevelPath()}}</h2></a>
     <a mat-flat-button [href]="'#'+level.parent" style="background-color: inherit;" class="print"><h2>{{getLevelPath()}}</h2></a>
-    <ul *ngIf="level.refs">
-      <li *ngFor="let link of level.refs">
-        <a mat-flat-button (click)="docNavigationService.jumpToReference(link.id)" class="screen">ref to {{link.id}}</a>
-      </li>
-    </ul>
+
     <section
       *ngIf="level.comment"
       class="comment"
@@ -18,83 +17,32 @@
 
   <mat-divider></mat-divider>
 
-  <div class="table">
-    <div *ngFor="let row of getRowIndexes()" class="row">
-      <div *ngFor="let col of getColumnIndexes();" class="cell">
-        <div
-          *ngIf="getRobot(row, col)"
-          class="content"
-          [id]="'node_' + getRobot(row, col).id"
-          [class]="getSelectedItemClass(getRobot(row, col).id)"
-        >
-          <div
-            fxLayout="row"
-            fxLayoutAlign="start space-around"
-          >
-            <div fxLayoutAlign="center start">
-              <mat-icon [style.margin]="'8px'">{{getIconName(getRobot(row, col).type)}}</mat-icon>
-            </div>
-            <div fxLayout="column" fxFlex="grow">
-              <div class="title">{{getRobot(row, col).name}}</div>
-              <div
-                class="subtitle subtitle-color"
-                fxLayoutAlign="end"
-              >{{getRobot(row, col).type}}</div>
-            </div>
-          </div>
-          <div
-            class="comment"
-            fxFlex="grow"
-          >
-            {{getRobot(row, col).comment}}
-            <ul *ngIf="getRobot(row, col).links">
-              <li *ngFor="let link of getRobot(row, col).links">
-                <a
-                  mat-flat-button
-                  href="#{{link.id}}"
-                  class="print"
-                >
-                  branch {{link.id}}
-                </a>
-                <button
-                  mat-flat-button
-                  (click)="docNavigationService.jumpToHeaderById(link.id)"
-                  class="screen"
-                >
-                  branch {{link.id}}
-                </button>
-              </li>
-
-            </ul>
-          </div>
-          <div class="footer" fxLayoutAlign="end" *ngIf="getRobot(row, col).hasChildren">
-            <a
-              mat-icon-button
-              href="#{{getRobot(row, col).id}}"
-              [style.width]="'24px'"
-              class="print"
-            >
-              <mat-icon>expand_more</mat-icon>
-            </a>
-            <button
-              mat-icon-button
-              (click)="jumpToHeader(getRobot(row, col))"
-              [style.width]="'24px'"
-              class="screen"
-            >
-              <mat-icon>expand_more</mat-icon>
-            </button>
-          </div>
-
-        </div>
-        <div
-          *ngIf="!getRobot(row, col)"
-          class="stub"
-        >
-          &nbsp;
-        </div>
+  <div style="width: 100%" fxLayout="row" fxLayoutAlign="center">
+    <div class="table">
+      <div class="row">
+        <div class="header-cell" style="width: 5%">Id</div>
+        <div class="header-cell" style="width: 35%">Name</div>
+        <div class="header-cell" style="width: 60%">Comment</div>
       </div>
 
+      <ng-container *ngFor="let row of getRowIndexes()"><ng-container *ngFor="let col of getColumnIndexes();"><ng-container *ngIf="getRobot(row, col)">
+        <div class="row"
+             (mouseover)="highlightStep(getRobot(row, col).id, true)"
+             (mouseout)="highlightStep(getRobot(row, col).id, false)"
+             [style.background-color]="highlightedId === getRobot(row, col).id || drawing?.highlightedStepId === getRobot(row, col).id ? '#e6e6e6' : 'white'"
+        >
+          <div class="content-cell title">{{getRobot(row, col).id}}</div>
+          <div class="content-cell">
+            <div class="title">{{getRobot(row, col).name}}</div>
+            <div
+              class="subtitle subtitle-color"
+              fxLayoutAlign="end"
+            >{{getRobot(row, col).type}}</div>
+            <mat-icon [style.margin]="'8px'">{{getIconName(getRobot(row, col).type)}}</mat-icon>
+          </div>
+          <div class="content-cell"><div class="comment">{{getRobot(row, col).comment}}</div></div>
+        </div>
+      </ng-container></ng-container></ng-container>
     </div>
   </div>
 
