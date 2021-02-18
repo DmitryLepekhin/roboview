@@ -42,6 +42,9 @@ export class Drawing {
     this.level.steps.forEach(step => this.appendNode(step));
     this.nodes.forEach(node => node.move(shiftX, shiftY));
 
+    // it is important to do after the nodes move
+    this.appendOutgoingRefs();
+
     this.connectNodes();
 
     const leftPoint = this.nodes[0].getLeftPoint();
@@ -61,17 +64,21 @@ export class Drawing {
     drawStep.highlightCallback = (id) => this.highlightedStepId = id;
     this.nodes.push(drawStep);
 
-    for (let i = 0; i < viewStep.links?.length; i++) {
-      const ref = new DrawRef(
-        drawStep.getBottomPoint(),
-        i + 1,
-        () => this.docNavigationService.jumpToHeaderById(viewStep.links[i].id),
-        '@branch ' + viewStep.links[i].id
-      );
-      this.outgoingRefs.push(ref);
-    }
-
     return drawStep;
+  }
+
+  appendOutgoingRefs(): void {
+    this.nodes.forEach(node => {
+      for (let i = 0; i < node.viewStep.links?.length; i++) {
+        const ref = new DrawRef(
+          node.getBottomPoint(),
+          i + 1,
+          () => this.docNavigationService.jumpToHeaderById(node.viewStep.links[i].id),
+          '@branch ' + node.viewStep.links[i].id
+        );
+        this.outgoingRefs.push(ref);
+      }
+    });
   }
 
   connectNodes(): void {

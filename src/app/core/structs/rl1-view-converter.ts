@@ -42,6 +42,21 @@ export function convertRL1View(rl1Robot: RL1Robot): ViewBlock[] {
         parentBlock.refs.push(backLink);
     });
 
+    // add outgoing reference by block.endId to this block also
+    // the block.endId be transformed to an additional link for the last step in this branch
+    if (block.endId > 0 && block.steps.length) {
+      // block.endId points to a step, we need block id here
+      const nextBlockId = allStepsBlocks['' + block.endId];
+      // the step that will acquire a new link:
+      const lastStep = block.steps[block.steps.length - 1];
+      const alreadyHasTheLink = lastStep.links.some(link => link.id === nextBlockId);
+      if (!alreadyHasTheLink) {
+        const newLink = new Link();
+        newLink.id = nextBlockId;
+        lastStep.links.push(newLink);
+      }
+    }
+
   });
 
   return result;

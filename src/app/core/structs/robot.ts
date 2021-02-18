@@ -41,6 +41,7 @@ export class ViewStep extends ViewDescription {
 
 export enum StepType {
   ROBOT= 'robot',
+  ASSIGN_VARIABLE = 'Assign Variable',
   ASSIGN = 'Assign',
   LOOP = 'Loop',
   GUARDED_CHOICE = 'Guarded Choice',
@@ -48,6 +49,7 @@ export enum StepType {
   TRY_CATCH = 'Try-Catch',
   CATCH_BRANCH = 'Catch branch',
   RETURN = 'Return',
+  RETURN_VALUE = 'Return Value',
   FOR_EACH_LOOP = 'For Each Loop',
   MAIN_BLOCK = 'Main block',
   FINAL_BLOCK = 'Final block',
@@ -56,7 +58,8 @@ export enum StepType {
   JOINT_POINT = 'Joint point',
 
   SNIPPET = 'Snippet',
-  DO_NOTHING = 'Do Nothing'
+  DO_NOTHING = 'Do Nothing',
+  TRY = 'Try'
 }
 
 export enum BlockType {

@@ -54,7 +54,9 @@ export class NodeViewComponent implements AfterViewInit {
       case StepType.ROBOT:
         return 'android';
       case StepType.ASSIGN:
-        return 'drag_handle';
+      case StepType.ASSIGN_VARIABLE:
+        // return 'drag_handle';
+        return '';
       case StepType.FOR_EACH_LOOP:
       case StepType.LOOP:
         return 'autorenew';
@@ -64,11 +66,15 @@ export class NodeViewComponent implements AfterViewInit {
       case StepType.GUARDED_BRANCH:
         return 'account_tree';
       case StepType.TRY_CATCH:
-        return 'call_split';
+      case StepType.TRY:
+        // return 'call_split';
+        return 'paragliding';
       case StepType.CATCH_BRANCH:
         return 'call_missed_outgoing';
       case StepType.RETURN:
-        return 'keyboard_return';
+      case StepType.RETURN_VALUE:
+        // return 'keyboard_return';
+        return '';
       case StepType.MAIN_BLOCK:
         return 'subject';
       case StepType.FINAL_BLOCK:

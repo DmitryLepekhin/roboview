@@ -19,7 +19,7 @@ export class DrawStep {
 
   public highlightCallback = (id: number) => {};
 
-  constructor(private viewStep: ViewStep,
+  constructor(public viewStep: ViewStep,
               private order: number = 0,
               private scale = 1) {
     this.gap *= scale;
