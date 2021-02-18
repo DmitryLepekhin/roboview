@@ -57,6 +57,10 @@ export class Drawing {
 
     this.outgoingRefs.forEach(ref => ref.draw(this.svg));
     this.incomingRefs.forEach(ref => ref.draw(this.svg));
+
+    // estimate height of the svg
+    const height = (this.outgoingRefs.length + this.incomingRefs.length + 1 + 2) * DrawInRef.Defaults.height;
+    this.svg.attr('height', height);
   }
 
   appendNode(viewStep: ViewStep): DrawStep {
@@ -88,7 +92,6 @@ export class Drawing {
   appendIncomingRefs(links: Link[], point: Point): void {
     // here we need to know LeftPoint of the first step, to connect to;
     links.forEach((link, index) => {
-      console.log(index);
       const ref: DrawInRef = new DrawInRef(point,
         index + 1,
         () => this.docNavigationService.jumpToHeaderById(link.id),
