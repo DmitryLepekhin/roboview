@@ -1,4 +1,4 @@
-import {Branch, Link, RL1Robot, Step, StepType, ViewBlock, ViewStep} from '@app/core/structs/robot';
+import {Block, Branch, Link, RL1Robot, Step, StepType, ViewBlock, ViewStep} from '@app/core/structs/robot';
 
 /**
  * Convert RL2 robot read from json to an array of ViewBlocks for visual representation
@@ -10,6 +10,8 @@ export function convertRL1View(rl1Robot: RL1Robot): ViewBlock[] {
   // map: step id -> block id, it will be used for backward links creation
   const allStepsBlocks = {};
   const allBlocksMap = {};
+  // special treatment for "group" steps: they get a link pointed to the first branch of the block with the same id
+  addGroupLinks(rl1Robot);
   branches.forEach(branch => {
     const viewBlock: ViewBlock = createViewBlock(branch);
     branch.steps.forEach(step => {
@@ -90,6 +92,32 @@ function createViewStep(step: Step): ViewStep {
   step.links?.forEach(link => viewStep.links.push({id: link}));
   viewStep.hasChildren = viewStep.links?.length > 0;
   return viewStep;
+}
+
+/**
+ * A link to the group branch is created for all "group" steps.
+ * "Group" steps relate to blocks with the same id, i.e. if, say, a "group" step
+ * has id = "3", then there should be a block with id = "3".
+ * The new link references the first branch in the block.
+ *
+ * Creating of the link helps to process and present steps uniformly.
+ */
+function addGroupLinks(rl1Robot: RL1Robot): void {
+  const blocks = {};
+  rl1Robot.blocks.forEach(block => blocks[block.id] = block);
+  flatMap(flatMap(rl1Robot.blocks.map(block => block.branches)).map(branch => branch.steps))
+    .filter(step => step.stepType === StepType.GROUP).forEach(step => {
+    const groupBlock: Block = blocks[step.id];
+    if (groupBlock && groupBlock.branches) {
+      const groupBranch = groupBlock.branches[0];
+      if (groupBranch) {
+        if (!step.links) {
+          step.links = [];
+        }
+        step.links.push(groupBranch.id);
+      }
+    }
+  });
 }
 
 function flatMap<T>(arrayOfArrays: T[][]): T[] {

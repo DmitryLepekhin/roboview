@@ -36,6 +36,8 @@ export class DrawRef {
 
     const groupElement = svg.append('g');
 
+    const fixedPoint2Y = point2.y - this.fontSize / 2 + 5; // font size is taken into account
+
     const text = groupElement.append('text')
       .attr('dy', point3.y)
       .attr('dx', point3.x)
@@ -52,7 +54,7 @@ export class DrawRef {
       .attr('x1', this.point.x)
       .attr('y1', this.point.y)
       .attr('x2', point2.x)
-      .attr('y2', point2.y)
+      .attr('y2', fixedPoint2Y)
       .attr('stroke-width', 1)
       .attr('stroke', 'black');
 
@@ -69,9 +71,9 @@ export class DrawRef {
 
     groupElement.append('line')
       .attr('x1', point2.x)
-      .attr('y1', point2.y - this.fontSize / 2 + 5)
+      .attr('y1', fixedPoint2Y)
       .attr('x2', point3.x - 5)
-      .attr('y2', point3.y - this.fontSize / 2 + 5)
+      .attr('y2', fixedPoint2Y)
       .attr('stroke-width', 1)
       .attr('stroke', 'black')
       .attr('marker-end', 'url(#triangle)');

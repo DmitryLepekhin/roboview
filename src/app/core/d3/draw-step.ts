@@ -1,6 +1,9 @@
 import {ViewStep} from '@app/core/structs';
 import {Point} from '@app/core/d3/point';
 import {DrawEdge} from '@app/core/d3/draw-edge';
+import {RowData} from '@app/core/d3/row-data';
+
+const PAGE_WIDTH = 2480; // A4
 
 export class DrawStep {
 
@@ -14,20 +17,44 @@ export class DrawStep {
   r = 20;
   fontSize = this.r * 0.75;
   textLength = 2 * this.r * 0.5;
+  // minimal distance between nodes
   gap = this.r * 2 + 25;
   text;
+
+  linkWidth = '@branch123'.length * 20 * 0.5;
 
   public highlightCallback = (id: number) => {};
 
   constructor(public viewStep: ViewStep,
+              private rowData: RowData,
               private order: number = 0,
               private scale = 1) {
     this.gap *= scale;
 
-    this.cx += this.gap * order;
-    this.cx *= scale;
+    // start a row with a right padding always
+    const leftPadding = 0;
+    this.cx = leftPadding;
 
-    this.cy *= scale;
+    // get the previous node sizes
+    if (rowData.node) {
+      const previousNode = rowData.node;
+      const x = previousNode.getRightPoint();
+      const linksLength = previousNode.viewStep.links && previousNode.viewStep.links.length > 0 ? 1 : 0;
+      this.cx = x.x + this.gap + linksLength * this.linkWidth;
+      this.cy = previousNode.cy;
+
+      if (this.cx > PAGE_WIDTH - 300) {
+        this.cx = leftPadding;
+        this.cy = previousNode.cy + rowData.outLinksCount * (this.fontSize + 10) + this.gap;
+        rowData.outLinksCount = 0;
+      }
+    } else {
+      this.cx *= scale;
+      this.cy *= scale;
+    }
+    // save this node into the rowData
+    this.rowData.node = this;
+    console.log(rowData);
 
     this.r *= scale;
     this.fontSize *= scale;

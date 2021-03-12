@@ -6,6 +6,7 @@ import {DrawRef} from '@app/core/d3/draw-ref';
 import {DrawEdge} from '@app/core/d3/draw-edge';
 import {DrawInRef} from '@app/core/d3/draw-in-ref';
 import {Point} from '@app/core/d3/point';
+import {RowData} from '@app/core/d3/row-data';
 
 export class Drawing {
 
@@ -30,6 +31,9 @@ export class Drawing {
 
   public highlightedStepId;
 
+  // saving previously appended node helps to position the next node
+  private rowData = new RowData();
+
   constructor(private tag = Drawing.TAG, private docNavigationService: DocNavigationService, private level: ViewBlock) {
     this.svg = d3.select(tag);
     // layout
@@ -37,7 +41,8 @@ export class Drawing {
     // get height of the incoming refs
     const depthIn = level.refs.length;
     const shiftY = DrawInRef.getHeight(depthIn);
-    const shiftX = depthIn === 0 ? 0 : DrawInRef.getWidth();
+    // const shiftX = depthIn === 0 ? DrawEdge.getLeftPadding() : Math.max(DrawInRef.getWidth(), DrawEdge.getLeftPadding());
+    const shiftX = Math.max(DrawInRef.getWidth(), DrawEdge.getLeftPadding());
 
     this.level.steps.forEach(step => this.appendNode(step));
     this.nodes.forEach(node => node.move(shiftX, shiftY));
@@ -49,6 +54,19 @@ export class Drawing {
 
     const leftPoint = this.nodes[0].getLeftPoint();
     this.appendIncomingRefs(this.level.refs, leftPoint);
+
+
+    this.svg.style('height', this.getHeight() + 'px');
+  }
+
+  // the outer svg must accommodate all these drawn parts
+  // the height can be calculated:
+  // get the bottom point of the last node
+  // and add height of outgoing links
+  private getHeight(): number {
+    const bottomY = this.rowData.node.cy;
+    const linksHeight = DrawRef.getHeight(this.rowData.outLinksCount + 1);
+    return bottomY + linksHeight;
   }
 
   public draw(): void {
@@ -64,9 +82,11 @@ export class Drawing {
   }
 
   appendNode(viewStep: ViewStep): DrawStep {
-    const drawStep: DrawStep = new DrawStep(viewStep, this.nodes.length);
+    const drawStep: DrawStep = new DrawStep(viewStep, this.rowData);
     drawStep.highlightCallback = (id) => this.highlightedStepId = id;
     this.nodes.push(drawStep);
+
+    this.rowData.node = drawStep;
 
     return drawStep;
   }
@@ -86,7 +106,10 @@ export class Drawing {
   }
 
   connectNodes(): void {
-    this.nodes.reduce((a, b) => { this.edges.push( a.connectTo(b) ); return b; } );
+    this.nodes.reduce((a, b) => {
+      this.edges.push( a.connectTo(b) );
+      return b;
+    } );
   }
 
   appendIncomingRefs(links: Link[], point: Point): void {

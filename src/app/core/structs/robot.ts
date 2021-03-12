@@ -59,7 +59,9 @@ export enum StepType {
 
   SNIPPET = 'Snippet',
   DO_NOTHING = 'Do Nothing',
-  TRY = 'Try'
+  TRY = 'Try',
+
+  GROUP = 'Group'
 }
 
 export enum BlockType {
